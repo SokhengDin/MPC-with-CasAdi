@@ -43,6 +43,7 @@ int main()
 
     std::vector<double> sol_x;
     std::vector<double> sol_u;
+    std::vector<Eigen::VectorXd> sol_x_eig;
 
     Eigen::VectorXd forward_kinematic = mpc_controller->kinematic_eigen(current_state, current_control);
 
@@ -55,6 +56,17 @@ int main()
 
         sol_x, sol_u = mpc_controller->get_optimal_solution();
 
-        current_state = sol_x[0];
+        current_state << sol_x[0], sol_x[1], sol_x[2];
+
+        current_state = time_step * forward_kinematic + current_state;
+
+        current_control << sol_u[0], sol_u[1], sol_u[2], sol_u[3];
+
+        std::cout << "Current states" << ": " << current_state << std::endl;
+
+        mpciter = mpciter + 1;
     }
+
+
+    return 0;
 }
