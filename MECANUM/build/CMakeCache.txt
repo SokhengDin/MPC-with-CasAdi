@@ -45,24 +45,6 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 //Flags used by the CXX compiler during RELWITHDEBINFO builds.
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
-//C compiler
-CMAKE_C_COMPILER:FILEPATH=/Library/Developer/CommandLineTools/usr/bin/cc
-
-//Flags used by the C compiler during all build types.
-CMAKE_C_FLAGS:STRING=
-
-//Flags used by the C compiler during DEBUG builds.
-CMAKE_C_FLAGS_DEBUG:STRING=-g
-
-//Flags used by the C compiler during MINSIZEREL builds.
-CMAKE_C_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
-
-//Flags used by the C compiler during RELEASE builds.
-CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
-
-//Flags used by the C compiler during RELWITHDEBINFO builds.
-CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
-
 //Path to a program.
 CMAKE_DLLTOOL:FILEPATH=CMAKE_DLLTOOL-NOTFOUND
 
@@ -226,19 +208,13 @@ MECANUM_SOURCE_DIR:STATIC=/Users/sokhengdin/Desktop/Robocon2023/CPP_opt/MECANUM
 PKG_CONFIG_ARGN:STRING=
 
 //pkg-config executable
-PKG_CONFIG_EXECUTABLE:FILEPATH=/Users/sokhengdin/mambaforge-pypy3/bin/pkg-config
+PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/local/bin/pkg-config
 
 //The directory containing a CMake configuration file for casadi.
 casadi_DIR:PATH=/usr/local/lib/cmake/casadi
 
-//Value Computed by CMake
-casadi_mpe_mpc_BINARY_DIR:STATIC=/Users/sokhengdin/Desktop/Robocon2023/CPP_opt/MECANUM/build
-
-//Value Computed by CMake
-casadi_mpe_mpc_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-casadi_mpe_mpc_SOURCE_DIR:STATIC=/Users/sokhengdin/Desktop/Robocon2023/CPP_opt/MECANUM
+//Path to a library.
+pkgcfg_lib_casadi_casadi:FILEPATH=/usr/local/lib/libcasadi.dylib
 
 
 ########################
@@ -277,18 +253,6 @@ CMAKE_CXX_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
 CMAKE_CXX_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_CXX_FLAGS_RELWITHDEBINFO
 CMAKE_CXX_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_C_COMPILER
-CMAKE_C_COMPILER-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_C_FLAGS
-CMAKE_C_FLAGS-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_C_FLAGS_DEBUG
-CMAKE_C_FLAGS_DEBUG-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_C_FLAGS_MINSIZEREL
-CMAKE_C_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_C_FLAGS_RELEASE
-CMAKE_C_FLAGS_RELEASE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_C_FLAGS_RELWITHDEBINFO
-CMAKE_C_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_DLLTOOL
 CMAKE_DLLTOOL-ADVANCED:INTERNAL=1
 //Path to cache edit program executable.
@@ -382,44 +346,85 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
-Eigen3_CFLAGS:INTERNAL=
+Eigen3_CFLAGS:INTERNAL=-I/usr/local/Cellar/eigen/3.4.0_1/include/eigen3
 Eigen3_CFLAGS_I:INTERNAL=
 Eigen3_CFLAGS_OTHER:INTERNAL=
-Eigen3_Eigen_INCLUDEDIR:INTERNAL=
-Eigen3_Eigen_LIBDIR:INTERNAL=
-Eigen3_Eigen_PREFIX:INTERNAL=
-Eigen3_Eigen_VERSION:INTERNAL=
-Eigen3_FOUND:INTERNAL=
+Eigen3_FOUND:INTERNAL=1
 Eigen3_INCLUDEDIR:INTERNAL=
+Eigen3_INCLUDE_DIRS:INTERNAL=/usr/local/Cellar/eigen/3.4.0_1/include/eigen3
+Eigen3_LDFLAGS:INTERNAL=
+Eigen3_LDFLAGS_OTHER:INTERNAL=
 Eigen3_LIBDIR:INTERNAL=
+Eigen3_LIBRARIES:INTERNAL=
+Eigen3_LIBRARY_DIRS:INTERNAL=
 Eigen3_LIBS:INTERNAL=
 Eigen3_LIBS_L:INTERNAL=
 Eigen3_LIBS_OTHER:INTERNAL=
 Eigen3_LIBS_PATHS:INTERNAL=
-Eigen3_MODULE_NAME:INTERNAL=
-Eigen3_PREFIX:INTERNAL=
-Eigen3_STATIC_CFLAGS:INTERNAL=
+Eigen3_MODULE_NAME:INTERNAL=eigen3
+Eigen3_PREFIX:INTERNAL=/usr/local/Cellar/eigen/3.4.0_1
+Eigen3_STATIC_CFLAGS:INTERNAL=-I/usr/local/Cellar/eigen/3.4.0_1/include/eigen3
 Eigen3_STATIC_CFLAGS_I:INTERNAL=
 Eigen3_STATIC_CFLAGS_OTHER:INTERNAL=
+Eigen3_STATIC_INCLUDE_DIRS:INTERNAL=/usr/local/Cellar/eigen/3.4.0_1/include/eigen3
+Eigen3_STATIC_LDFLAGS:INTERNAL=
+Eigen3_STATIC_LDFLAGS_OTHER:INTERNAL=
 Eigen3_STATIC_LIBDIR:INTERNAL=
+Eigen3_STATIC_LIBRARIES:INTERNAL=
+Eigen3_STATIC_LIBRARY_DIRS:INTERNAL=
 Eigen3_STATIC_LIBS:INTERNAL=
 Eigen3_STATIC_LIBS_L:INTERNAL=
 Eigen3_STATIC_LIBS_OTHER:INTERNAL=
 Eigen3_STATIC_LIBS_PATHS:INTERNAL=
-Eigen3_VERSION:INTERNAL=
+Eigen3_VERSION:INTERNAL=3.4.0
 Eigen3_eigen3_INCLUDEDIR:INTERNAL=
 Eigen3_eigen3_LIBDIR:INTERNAL=
 Eigen3_eigen3_PREFIX:INTERNAL=
 Eigen3_eigen3_VERSION:INTERNAL=
-Eigen3_eigen_INCLUDEDIR:INTERNAL=
-Eigen3_eigen_LIBDIR:INTERNAL=
-Eigen3_eigen_PREFIX:INTERNAL=
-Eigen3_eigen_VERSION:INTERNAL=
 //Details about finding PkgConfig
-FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/Users/sokhengdin/mambaforge-pypy3/bin/pkg-config][v0.29.2()]
+FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/local/bin/pkg-config][v0.29.2()]
 //ADVANCED property for variable: PKG_CONFIG_ARGN
 PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
 PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 __pkg_config_checked_Eigen3:INTERNAL=1
+__pkg_config_checked_casadi:INTERNAL=1
+casadi_CFLAGS:INTERNAL=-I/usr/local/include
+casadi_CFLAGS_I:INTERNAL=
+casadi_CFLAGS_OTHER:INTERNAL=
+casadi_FOUND:INTERNAL=1
+casadi_INCLUDEDIR:INTERNAL=/usr/local/include
+casadi_INCLUDE_DIRS:INTERNAL=/usr/local/include
+casadi_LDFLAGS:INTERNAL=-L/usr/local/lib;-lcasadi
+casadi_LDFLAGS_OTHER:INTERNAL=
+casadi_LIBDIR:INTERNAL=/usr/local/lib
+casadi_LIBRARIES:INTERNAL=casadi
+casadi_LIBRARY_DIRS:INTERNAL=/usr/local/lib
+casadi_LIBS:INTERNAL=
+casadi_LIBS_L:INTERNAL=
+casadi_LIBS_OTHER:INTERNAL=
+casadi_LIBS_PATHS:INTERNAL=
+casadi_MODULE_NAME:INTERNAL=casadi
+casadi_PREFIX:INTERNAL=/usr/local
+casadi_STATIC_CFLAGS:INTERNAL=-I/usr/local/include
+casadi_STATIC_CFLAGS_I:INTERNAL=
+casadi_STATIC_CFLAGS_OTHER:INTERNAL=
+casadi_STATIC_INCLUDE_DIRS:INTERNAL=/usr/local/include
+casadi_STATIC_LDFLAGS:INTERNAL=-L/usr/local/lib;-lcasadi
+casadi_STATIC_LDFLAGS_OTHER:INTERNAL=
+casadi_STATIC_LIBDIR:INTERNAL=
+casadi_STATIC_LIBRARIES:INTERNAL=casadi
+casadi_STATIC_LIBRARY_DIRS:INTERNAL=/usr/local/lib
+casadi_STATIC_LIBS:INTERNAL=
+casadi_STATIC_LIBS_L:INTERNAL=
+casadi_STATIC_LIBS_OTHER:INTERNAL=
+casadi_STATIC_LIBS_PATHS:INTERNAL=
+casadi_VERSION:INTERNAL=3.5.5
+casadi_casadi_INCLUDEDIR:INTERNAL=
+casadi_casadi_LIBDIR:INTERNAL=
+casadi_casadi_PREFIX:INTERNAL=
+casadi_casadi_VERSION:INTERNAL=
+//ADVANCED property for variable: pkgcfg_lib_casadi_casadi
+pkgcfg_lib_casadi_casadi-ADVANCED:INTERNAL=1
+prefix_result:INTERNAL=/usr/local/lib
 

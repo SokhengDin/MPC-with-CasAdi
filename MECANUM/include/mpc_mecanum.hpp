@@ -48,7 +48,7 @@ class MPCMECANUM
         int num_controls_ = 4;
         // ---- MPC Constraint and Cost Function
         ca::MX cost_fn_;
-        ca::MX g_;
+        // ca::MX g_;
 
         std::vector<double> x_min_;
         std::vector<double> x_max_;
@@ -72,7 +72,7 @@ class MPCMECANUM
         template<typename T1, typename T2>
         T1 get_kinematic_model(T1 states, T2 controls)
         {
-            ca::DM rot_mat = DM::zeros(3,3);
+            ca::DM rot_mat = ca::DM::zeros(3,3);
             rot_mat(0,0) = ca::cos(states[2]);
             rot_mat(0,1) = ca::sin(states[2]);
             rot_mat(0,2) = 0;
@@ -83,7 +83,7 @@ class MPCMECANUM
             rot_mat(2,1) = 0;
             rot_mat(2,2) = 1;
 
-            ca::DM J_for = DM::zeros(3,4);
+            ca::DM J_for = ca::DM::zeros(3,4);
             J_for(0,0) = 1;
             J_for(0,1) = -1;
             J_for(0,2) = -1;

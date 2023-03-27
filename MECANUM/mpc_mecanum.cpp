@@ -15,7 +15,6 @@ MPCMECANUM::MPCMECANUM(
 
 MPCMECANUM::~MPCMECANUM(){}
 
-
 Eigen::VectorXd MPCMECANUM::kinematic_eigen(Eigen::VectorXd states, Eigen::VectorXd controls)
 {
     Eigen::MatrixXd rot_mat(3,3);
@@ -106,7 +105,7 @@ void MPCMECANUM::setup_mpc()
     for (int k = 0; k < prediction_horizon_; k++)
     {
         ca::MX st_next = X(all, k+1);
-        ca::MX st_next_euler = X(all, k) + time_step_ * get_kinematic_model(X(all, k), U(all, k));
+        ca::MX st_next_euler = X(all, k) + time_step_ * get_kinematic_model((ca::MX)X(all, k), ca::MX(U(all, k)));
         g_.push_back(st_next-st_next_euler);
     }
 
@@ -211,5 +210,5 @@ std::vector<double> MPCMECANUM::get_optimal_solution()
                  sol_all.begin() + prediction_horizon_ * num_states_ + (prediction_horizon_ - 1)*num_controls_);
     sol_u_matrix = Eigen::MatrixXd::Map(sol_u.data(), num_controls_, prediction_horizon_ - 1);
 
-    return sol_x, sol_u ;
+    return sol_all;
 }
