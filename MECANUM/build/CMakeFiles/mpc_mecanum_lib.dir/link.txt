@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libmpc_mecanum_lib.a CMakeFiles/mpc_mecanum_lib.dir/src/mpc_mecanum.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libmpc_mecanum_lib.a

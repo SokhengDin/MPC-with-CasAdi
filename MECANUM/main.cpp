@@ -1,72 +1,69 @@
-#include "include/mpc_mecanum.hpp"
+#include "auto_mecanum.hpp"
 
-
-int main()
+int main(int argc, char* argv[])
 {
     double Lx = 0.165;
     double Ly = 0.18;
     double wheel_radius = 0.05;
-    double time_step = 0.1;
-    double sim_time = 20.0;
-    const int prediction_horizon = 20;
+    double dt = 0.1;
+    double sim_time = 10.0;
+    int prediction_horizons = 10;
+    int Niter = 0;
 
-    auto mpc_controller = std::make_shared<MPCMECANUM>(MPCMECANUM(
-        Lx, Ly, wheel_radius, time_step, sim_time, prediction_horizon
-    ));
-
-    mpc_controller->setup_mpc();
-
-    // Set boundary
-    Eigen::Vector4d u_min;
+    // Boundary
+    Eigen::VectorXd x_min(3);
+    x_min << -3, -3, -1.57;
+    Eigen::VectorXd x_max(3);
+    x_max <<  3,  3,  1.57;
+    Eigen::VectorXd u_min(4);
     u_min << -10, -10, -10, -10;
-    Eigen::Vector4d u_max;
+    Eigen::VectorXd u_max(4);
     u_max << 10, 10, 10, 10;
-    Eigen::Vector3d x_min;
-    x_min << -3, -3, -3.14;
-    Eigen::Vector3d x_max;
-    x_max << 3, 3, 3.14;
 
-    mpc_controller->set_boundary(u_min, u_max, x_min, x_max);
+    // States and Controls
+    Eigen::Vector3d current_states(3);
+    Eigen::Vector4d current_controls(4);
 
-    // Setup simulation parameters
+    Eigen::Vector3d goal_states(3);
+    Eigen::Vector4d goal_controls(4);
+    goal_states << 2, 2, 0;
+    goal_controls << 10, 10, 10, 10;
 
-    int mpciter = 0;
-
-    Eigen::Vector3d current_state(1, 3);
-    current_state << 0.0, 0.0, 0.0;
-    Eigen::Vector3d target_state(1, 3);
-    target_state << 3.0, 3.0, 0.0;
-    Eigen::Vector4d current_control(1, 4);
-    current_control << 0.0, 0.0, 0.0, 0.0;
-    Eigen::Vector4d target_control(1, 4);
-    target_control << 10, 10, 10, 10;
-
+    // Get solution
     std::vector<double> sol_x;
     std::vector<double> sol_u;
-    std::vector<Eigen::VectorXd> sol_x_eig;
 
-    Eigen::VectorXd forward_kinematic = mpc_controller->kinematic_eigen(current_state, current_control);
+    auto mpc_controller = std::make_shared<AUTO_MECANUM>(AUTO_MECANUM(
+        Lx, Ly, wheel_radius,
+        dt, sim_time, prediction_horizons
+    ));
 
-    while (mpciter * time_step < sim_time)
+    // Setup MPC
+    mpc_controller->setup_auto_mecanum();
+
+    // Set boundary
+    mpc_controller->set_boundary(x_min, x_max, u_min, u_max);
+
+    while (Niter * dt < sim_time)
     {
-        mpc_controller->trajectory_generation(
-            current_state, target_state,
-            current_control, target_control
+        mpc_controller->input_trajectory(
+            current_states, current_controls,
+            goal_states, goal_controls
         );
 
-        sol_x, sol_u = mpc_controller->get_optimal_solution();
+        sol_x, sol_u = mpc_controller->optimal_solution();
 
-        current_state << sol_x[0], sol_x[1], sol_x[2];
+        current_states(sol_x.data());
+        current_controls(sol_u.data());
 
-        current_state = time_step * forward_kinematic + current_state;
+        current_states = current_states + dt * mpc_controller->forward_kinematic(current_states(2),
+                                                                                 current_controls(0),
+                                                                                 current_controls(1),
+                                                                                 current_controls(2),
+                                                                                 current_controls(3));
 
-        current_control << sol_u[0], sol_u[1], sol_u[2], sol_u[3];
-
-        std::cout << "Current states" << ": " << current_state << std::endl;
-
-        mpciter = mpciter + 1;
+        std::cout << current_states << std::endl;
+        Niter = Niter + 1;
     }
 
-
-    return 0;
 }
