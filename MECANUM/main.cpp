@@ -11,14 +11,18 @@ int main(int argc, char* argv[])
     int Niter = 0;
 
     // Boundary
-    Eigen::VectorXd x_min(3);
-    x_min << -3, -3, -1.57;
-    Eigen::VectorXd x_max(3);
-    x_max <<  3,  3,  1.57;
-    Eigen::VectorXd u_min(4);
-    u_min << -10, -10, -10, -10;
-    Eigen::VectorXd u_max(4);
-    u_max << 10, 10, 10, 10;
+    // Eigen::VectorXd x_min(3);
+    // x_min << -3, -3, -1.57;
+    // Eigen::VectorXd x_max(3);
+    // x_max <<  3,  3,  1.57;
+    // Eigen::VectorXd u_min(4);
+    // u_min << -10, -10, -10, -10;
+    // Eigen::VectorXd u_max(4);
+    // u_max << 10, 10, 10, 10;
+    std::vector<double> x_min{-3, -3, -1.57};
+    std::vector<double> x_max{3, 3, 1.57};
+    std::vector<double> u_min{-10, -10, -10, -10};
+    std::vector<double> u_max{10, 10, 10, 10};
 
     // States and Controls
     Eigen::Vector3d current_states(3);

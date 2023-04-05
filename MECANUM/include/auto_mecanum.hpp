@@ -31,6 +31,7 @@ class AUTO_MECANUM
 
         std::vector<double> lbx_;
         std::vector<double> ubx_;
+
         DM lbg_ = DM::zeros(3*(prediction_horizon_+1), 1);
         DM ubg_ = DM::zeros(3*(prediction_horizon_+1), 1);
 
@@ -79,8 +80,11 @@ class AUTO_MECANUM
         Eigen::VectorXd inverse_kinematic(double theta, double vx, double vy, double vth);
 
         void setup_auto_mecanum();
-        void set_boundary(Eigen::Vector3d x_min, Eigen::Vector3d x_max,
-                          Eigen::Vector4d u_min, Eigen::Vector4d u_max);
+        // void set_boundary(Eigen::Vector3d x_min, Eigen::Vector3d x_max,
+        //                   Eigen::Vector4d u_min, Eigen::Vector4d u_max);
+
+        void set_boundary(std::vector<double> x_min, std::vector<double> x_max,
+                          std::vector<double> u_min, std::vector<double> u_max);
 
         void input_trajectory(Eigen::Vector3d current_states, Eigen::Vector4d current_controls,
                               Eigen::Vector3d goal_states, Eigen::Vector4d goal_controls);

@@ -16,7 +16,7 @@ pkg_search_module(casadi REQUIRED casadi)
 include_directories(${casadi_INCLUDE_DIRS})
 include_directories(include)
 
-add_library(mpc_mecanum_lib src/mpc_mecanum.cpp)
+add_library(mpc_mecanum_lib src/auto_mecanum.cpp)
 
-add_executable(mpc_mecanum_controller main.cpp)
-target_link_libraries(mpc_mecanum_controller mpc_mecanum_lib casadi)
+add_executable(mpc_controller main.cpp)
+target_link_libraries(mpc_controller mpc_mecanum_lib casadi)
