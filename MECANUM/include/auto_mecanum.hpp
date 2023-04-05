@@ -27,16 +27,18 @@ class AUTO_MECANUM
         MX J_for = MX::ones(3,4);
         MX cost_fn = 0.0;
 
-        std::vector<MX> g;
+        MX g;
 
         std::vector<double> lbx_;
         std::vector<double> ubx_;
 
-        DM lbg_ = DM::zeros(3*(prediction_horizon_+1), 1);
-        DM ubg_ = DM::zeros(3*(prediction_horizon_+1), 1);
+        DM lbg_ = 0.0;
+        DM ubg_ = 0.0;
 
         DMDict args_;
         Function solver_;
+
+        std::vector<MX> RHS;
 
         // MAP
         std::map<std::string, DM> results_;

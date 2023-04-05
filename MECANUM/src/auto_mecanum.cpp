@@ -100,27 +100,38 @@ void AUTO_MECANUM::setup_auto_mecanum()
     /// Rotation Matrix
     rot_mat(0,0) = MX::cos(theta);
     rot_mat(0,1) = MX::sin(theta);
-    rot_mat(0,2) = 0.0;
+    rot_mat(0,2) = 0;
     rot_mat(1,0) =-MX::sin(theta);
     rot_mat(1,1) = MX::cos(theta);
-    rot_mat(1,2) = 0.0;
-    rot_mat(2,0) = 0.0;
-    rot_mat(2,1) = 0.0;
-    rot_mat(2,2) = 1.0;
+    rot_mat(1,2) = 0;
+    rot_mat(2,0) = 0;
+    rot_mat(2,1) = 0;
+    rot_mat(2,2) = 1;
 
+    J_for(0,0) = 1;
+    J_for(0,1) = 1;
+    J_for(0,2) = 1;
+    J_for(0,3) = 1;
     J_for(1,0) = -1;
+    J_for(1,1) = 1;
+    J_for(1,2) = 1;
     J_for(1,3) = -1;
     J_for(2,0) = -1/(Lx_+Ly_);
-    J_for(2,1) =  1/(Lx_+Ly_);
+    J_for(2,1) = 1/(Lx_+Ly_);
     J_for(2,2) = -1/(Lx_+Ly_);
-    J_for(2,3) =  1/(Lx_+Ly_);
+    J_for(2,3) = 1/(Lx_+Ly_);
 
-    MX RHS = MX::mtimes({rot_mat.T(), J_for, controls});
+    RHS.push_back((wheel_radius_/4)*(w1*(MX::sin(theta)+MX::cos(theta))+w2*(-MX::sin(theta)+MX::cos(theta))+w3*(-MX::sin(theta)+MX::cos(theta))+w4*(MX::sin(theta)+MX::cos(theta))));
+    RHS.push_back((wheel_radius_/4)*(w1*(MX::sin(theta)-MX::cos(theta))+w2*(MX::sin(theta)+MX::cos(theta))+w3*(MX::sin(theta)+MX::cos(theta))+w4*(MX::sin(theta)-MX::cos(theta))));
+    RHS.push_back((wheel_radius_/4)*(-w1+w2+w3-w4)*(1/(Lx_+Ly_)));
 
-    system_kinematic_ = Function("f", {states, controls}, {RHS});
+
+    system_kinematic_ = Function("f", {states, controls}, {MX::vertcat(RHS)});
+
+    // std::cout << RHS << std::endl;
 
     // Create free decision variables
-    std::cout << "Stage 1" << std::endl;
+    // std::cout << "Stage 1" << std::endl;
     MX opt_dec = MX::vertcat({MX::reshape(X, -1, 1), MX::reshape(U, -1, 1)});
     MX opt_par = MX::vertcat({MX::reshape(X_ref, -1, 1), MX::reshape(U_ref, -1, 1)});
 
@@ -133,16 +144,16 @@ void AUTO_MECANUM::setup_auto_mecanum()
         cost_fn = cost_fn + MX::mtimes({st_err.T(), Q_, st_err}) + MX::mtimes({con_err.T(), R_, con_err});
     }
 
-    std::cout << "Stage 2" << std::endl;
+    // std::cout << "Stage 2" << std::endl;
 
     // Terminal cost
     cost_fn = cost_fn + MX::mtimes({(X(all, prediction_horizon_)-X_ref(all, prediction_horizon_)).T(),
                                     Q_, (X(all, prediction_horizon_)-X_ref(all, prediction_horizon_))});
 
     // Intialize Constraint
-    g.push_back(X(all, 0)-X_ref(all, 0));
+    g = X(all, 0) - X_ref(all, 0);
 
-    std::cout << "Stage 3" << std::endl;
+    // std::cout << "Stage 3" << std::endl;
 
     // Path Constraint
     for (int k = 0; k < prediction_horizon_-1; k++)
@@ -153,17 +164,16 @@ void AUTO_MECANUM::setup_auto_mecanum()
         input.push_back(X(all, k));
         input.push_back(U(all, k));
         MX st_euler = system_kinematic_(input).at(0) * dt_ + X(all, k);
-        g.push_back(st_next-st_euler);
+        g = MX::vertcat({g, st_next-st_euler});
+        // std::cout << st_euler << std::endl;
     }
-
-    // std::cout << g.size() << std::endl;
 
     // Nonlinear problem
     MXDict nlp_prob = {
         {"f", cost_fn},
         {"x", opt_dec},
         {"p", opt_par},
-        {"g", MX::vertcat(g)}
+        {"g", g}
     };
 
     // Solver
@@ -172,13 +182,13 @@ void AUTO_MECANUM::setup_auto_mecanum()
     nlp_opts["expand"] = true;
     nlp_opts["ipopt.max_iter"] = 1000;
     nlp_opts["ipopt.print_level"] = 0;
-    nlp_opts["print_time"] = 1;
+    nlp_opts["print_time"] = 0;
     nlp_opts["ipopt.acceptable_tol"] = 1e-8;
     nlp_opts["ipopt.acceptable_obj_change_tol"] = 1e-6;
 
     solver_ = nlpsol("nlpsol", solver_name, nlp_prob, nlp_opts);
 
-    std::cout << "Stage 4" << std::endl;
+    // std::cout << "Stage 4" << std::endl;
 }
 
 // void AUTO_MECANUM::set_boundary(Eigen::Vector3d x_min, Eigen::Vector3d x_max,
@@ -249,7 +259,7 @@ void AUTO_MECANUM::set_boundary(std::vector<double> x_min, std::vector<double> x
 
     }
 
-    std::cout << "Stage 5" << std::endl;
+    // std::cout << "Stage 5" << std::endl;
 
 }
 
@@ -268,7 +278,7 @@ void AUTO_MECANUM::input_trajectory(
     next_trajectories = goal_states.replicate(1, prediction_horizon_+1).reshaped();
     next_controls = goal_controls.replicate(1, prediction_horizon_).reshaped();
 
-    std::cout << "Stage 7" << std::endl;
+    // std::cout << "Stage 7" << std::endl;
 
     Eigen::VectorXd variables(init_states.rows()+init_controls.rows());
     Eigen::VectorXd params(next_trajectories.rows()+next_controls.rows());
@@ -279,18 +289,19 @@ void AUTO_MECANUM::input_trajectory(
     params << next_trajectories,
               next_controls;
 
-
-    std::cout << variables.size() << std::endl;
+    // std::cout << params << std::endl;
 
     std::vector<double> x0(variables.data(), variables.data()+variables.size());
     std::vector<double> p(params.data(), params.data()+params.size());
 
     args_ = {
-        {"lbg", 0.0},
-        {"ubg", 0.0},
+        {"lbg", lbg_},
+        {"ubg", ubg_},
         {"x0", x0},
         {"p", p}
     };
+
+    // std::cout << args_["x0"] << std::endl;
 }
 
 
@@ -298,15 +309,12 @@ std::vector<double> AUTO_MECANUM::optimal_solution()
 {
     results_ = solver_(args_);
 
-    std::cout << "Stage 8" << std::endl;
+    // std::cout << "Stage 8" << std::endl;
 
     std::vector<double> results_all(results_.at("x"));
-    std::vector<double> result_x;
-    std::vector<double> result_u;
 
-    result_x.assign(results_all.begin(), results_all.begin() + prediction_horizon_ * 3);
-    result_u.assign(results_all.begin()+ prediction_horizon_ * 3, results_all.end());
+    // std::cout << result_u[0] << std::endl;
 
-    return result_x, result_u;
+    return results_all;
 }
 

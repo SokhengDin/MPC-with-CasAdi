@@ -48,6 +48,12 @@ int main(int argc, char* argv[])
     // Set boundary
     mpc_controller->set_boundary(x_min, x_max, u_min, u_max);
 
+    // Solution
+    std::vector<double> results_all;
+    std::vector<double> result_x;
+    std::vector<double> result_u;
+
+
     while (Niter * dt < sim_time)
     {
         mpc_controller->input_trajectory(
@@ -55,18 +61,35 @@ int main(int argc, char* argv[])
             goal_states, goal_controls
         );
 
-        sol_x, sol_u = mpc_controller->optimal_solution();
+        results_all = mpc_controller->optimal_solution();
 
-        current_states(sol_x.data());
-        current_controls(sol_u.data());
+        result_x.assign(results_all.begin(), results_all.begin()+(prediction_horizons+1)*3);
+		result_u.assign(results_all.begin() + (prediction_horizons+1) * 3, results_all.end());
 
-        current_states = current_states + dt * mpc_controller->forward_kinematic(current_states(2),
-                                                                                 current_controls(0),
-                                                                                 current_controls(1),
-                                                                                 current_controls(2),
-                                                                                 current_controls(3));
+        current_states(result_x.data());
+        current_controls(result_u.data());
 
-        std::cout << current_states << std::endl;
+        result_x.erase(result_x.begin(), result_x.begin()+3);
+		for (int i = 0; i < 3; i++)
+		{
+			result_x.push_back(*(result_x.end() - 3 + 1));
+		}
+
+        result_u.erase(result_u.begin(), result_u.begin()+4);
+		for (int i = 0; i < 4; i++)
+		{
+			result_u.push_back(*(result_u.end() - 4 + 1));
+		}
+
+        current_states = current_states + dt * mpc_controller->forward_kinematic(result_x[2],
+                                                                                 result_u[0],
+                                                                                 result_u[1],
+                                                                                 result_u[3],
+                                                                                 result_u[4]);
+        // std::cout << current_states << std::endl;
+        // std::cout << "Optimal Solution: " << result_x[0] << " " << result_x[1]  << " " << result_x[2] << std::endl << std::endl;
+        std::cout << "Optimal control: " << result_u[0] << " " << result_u[1] << result_u[2] << " " << result_u[3] << std::endl << std::endl;
+        // std::cout <<  Niter << std::endl;
         Niter = Niter + 1;
     }
 
