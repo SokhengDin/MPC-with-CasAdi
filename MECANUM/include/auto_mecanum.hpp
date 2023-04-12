@@ -21,6 +21,8 @@ class AUTO_MECANUM
         int prediction_horizon_;
 
         Slice all;
+        Slice slice_states;
+        Slice slice_controls;
         DM Q_ = DM::zeros(3,3);
         DM R_ = DM::zeros(4,4);
         MX rot_mat = MX::ones(3,3);
@@ -38,13 +40,15 @@ class AUTO_MECANUM
         DMDict args_;
         Function solver_;
 
-        std::vector<MX> RHS;
+        // std::vector<MX> RHS;
+
+        // std::vector<MX> RHS;
+        MX RHS;
 
         // MAP
         std::map<std::string, DM> results_;
 
         // Casadi Function
-
         Function system_kinematic_;
 
         // Eigen States
@@ -76,14 +80,11 @@ class AUTO_MECANUM
 
         virtual ~AUTO_MECANUM();
 
-        // Eigen::VectorXd forward_kinematic(double theta_, double w1_, double w2_, double w3_, double w4_);
-        // Eigen::VectorXd inverse_kinematic(double vx_, double vy_, double vth_);
         Eigen::VectorXd forward_kinematic(double theta, double w1, double w2, double w3, double w4);
         Eigen::VectorXd inverse_kinematic(double theta, double vx, double vy, double vth);
+        Eigen::VectorXd shift_timestep(double dt, double &t, std::vector<double> x0, std::vector<double> &u);
 
         void setup_auto_mecanum();
-        // void set_boundary(Eigen::Vector3d x_min, Eigen::Vector3d x_max,
-        //                   Eigen::Vector4d u_min, Eigen::Vector4d u_max);
 
         void set_boundary(std::vector<double> x_min, std::vector<double> x_max,
                           std::vector<double> u_min, std::vector<double> u_max);
