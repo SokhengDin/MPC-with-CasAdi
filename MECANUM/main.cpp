@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
     double wheel_radius = 0.05;
     double dt = 0.1;
     double sim_time = 10.0;
-    int prediction_horizons = 100;
+    int prediction_horizons = 10;
     int Niter = 0;
 
     // Boundary
@@ -18,12 +18,11 @@ int main(int argc, char* argv[])
 
     // States and Controls
     Eigen::Vector3d current_states(3);
-    Eigen::Vector3d states(3);
     Eigen::Vector4d current_controls(4);
 
     Eigen::Vector3d goal_states(3);
     Eigen::Vector4d goal_controls(4);
-    goal_states << 2, 2 , 1.57;
+    goal_states << 2, 2 , 0.0;
     goal_controls << 10, 10, 10, 10;
 
     auto mpc_controller = std::make_shared<AUTO_MECANUM>(AUTO_MECANUM(
@@ -44,6 +43,7 @@ int main(int argc, char* argv[])
 
     while (Niter * dt < sim_time)
     {
+        auto start_time = std::chrono::high_resolution_clock::now();
         mpc_controller->input_trajectory(
             current_states, current_controls,
             goal_states, goal_controls
@@ -58,12 +58,11 @@ int main(int argc, char* argv[])
         current_states << result_x[0], result_x[1], result_x[2];
         current_controls << result_u[0], result_u[1], result_u[2], result_u[3];
 
-        states = current_states + dt * mpc_controller->forward_kinematic(result_x[2],
+        current_states = current_states + dt * mpc_controller->forward_kinematic(result_x[2],
                                                                          result_u[0],
                                                                          result_u[1],
                                                                          result_u[2],
                                                                          result_u[3]);
-        current_states = states;
 
         // std::cout << result_x.size() << std::endl;
         std::cout << "Current states: " << current_states << std::endl;
@@ -72,6 +71,13 @@ int main(int argc, char* argv[])
         // std::cout << "Optimal solution: " << result_x[0] << " " << result_x[1]  << " " << result_x[2] << std::endl << std::endl;
         // std::cout << "Optimal control: " << result_u[0] << " " << result_u[1] << " " << result_u[2] << " " << result_u[3] << std::endl << std::endl;
         // std::cout <<  Niter << std::endl;
+
+        auto stop_time = std::chrono::high_resolution_clock::now();
+
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
+
+        std::cout << "average calculation time for each iteration [s]: "
+              << duration.count() / 1e6 << std::endl;
 
         Niter = Niter + 1;
     }

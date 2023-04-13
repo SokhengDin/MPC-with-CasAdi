@@ -34,13 +34,12 @@ class AUTO_MECANUM
         std::vector<double> lbx_;
         std::vector<double> ubx_;
 
-        DM lbg_ = 0.0;
-        DM ubg_ = 0.0;
+        DM lbg_;
+        DM ubg_;
 
         DMDict args_;
         Function solver_;
 
-        // std::vector<MX> RHS;
 
         // std::vector<MX> RHS;
         MX RHS;
