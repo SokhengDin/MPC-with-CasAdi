@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/mpc_omni.dir/main2.cpp.o  -o mpc_omni  -Wl,-rpath,/usr/local/lib libmpc_omni_lib.a /usr/local/lib/libcasadi.so.3.7 -ldl 

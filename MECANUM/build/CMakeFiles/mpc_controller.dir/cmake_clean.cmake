@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/mpc_controller.dir/main.cpp.o"
-  "CMakeFiles/mpc_controller.dir/main.cpp.o.d"
   "mpc_controller"
   "mpc_controller.pdb"
 )

@@ -92,9 +92,9 @@ void AUTO_MECANUM::setup_auto_mecanum()
 
 
     // Weight Matrix Diagonalize
-    Q_(0,0) = 75;
-    Q_(1,1) = 75;
-    Q_(2,2) = 90;
+    Q_(0,0) = 750;
+    Q_(1,1) = 750;
+    Q_(2,2) = 900;
     R_(0,0) = 0.01;
     R_(1,1) = 0.01;
     R_(2,2) = 0.01;
@@ -201,7 +201,7 @@ void AUTO_MECANUM::setup_auto_mecanum()
 void AUTO_MECANUM::set_boundary(std::vector<double> x_min, std::vector<double> x_max,
                                 std::vector<double> u_min, std::vector<double> u_max)
 {
-    for (int k = 0; k < prediction_horizon_; k++)
+    for (int k = 0; k < prediction_horizon_+1; k++)
     {
         lbx_.push_back(x_min[0]);
         lbx_.push_back(x_min[1]);
@@ -212,7 +212,7 @@ void AUTO_MECANUM::set_boundary(std::vector<double> x_min, std::vector<double> x
         ubx_.push_back(x_max[2]);
     }
 
-    for (int k = 0; k < prediction_horizon_-1; k++)
+    for (int k = 0; k < prediction_horizon_; k++)
     {
         lbx_.push_back(u_min[0]);
         lbx_.push_back(u_min[1]);
@@ -227,6 +227,13 @@ void AUTO_MECANUM::set_boundary(std::vector<double> x_min, std::vector<double> x
     }
 
     // std::cout << "Stage 5" << std::endl;
+
+    // args_ = {
+    //     {"lbx", lbx_},
+    //     {"ubx", ubx_},
+    //     {"lbg", lbg_},
+    //     {"ubg", ubg_}, 
+    // };
 
 }
 
@@ -281,12 +288,13 @@ void AUTO_MECANUM::input_trajectory(
     // std::cout << "Stage 7" << std::endl;
 
     args_ = {
+        {"lbx", lbx_},
+        {"ubx", ubx_},
         {"lbg", lbg_},
-        {"ubg", ubg_},
+        {"ubg", ubg_}, 
         {"x0", variables},
         {"p", params}
     };
-
 
 }
 

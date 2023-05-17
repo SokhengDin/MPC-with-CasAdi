@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 
     Eigen::Vector3d goal_states(3);
     Eigen::Vector4d goal_controls(4);
-    goal_states << 2, 2 , 0.0;
+    goal_states << 3, 3 , 1.57;
     goal_controls << 10, 10, 10, 10;
 
     auto mpc_controller = std::make_shared<AUTO_MECANUM>(AUTO_MECANUM(
@@ -69,15 +69,15 @@ int main(int argc, char* argv[])
         // std::cout << results_all << std::endl;
         // std::cout << "Current controls: " << current_controls << std::endl;
         // std::cout << "Optimal solution: " << result_x[0] << " " << result_x[1]  << " " << result_x[2] << std::endl << std::endl;
-        // std::cout << "Optimal control: " << result_u[0] << " " << result_u[1] << " " << result_u[2] << " " << result_u[3] << std::endl << std::endl;
+        std::cout << "Optimal control: " << result_u[0] << " " << result_u[1] << " " << result_u[2] << " " << result_u[3] << std::endl << std::endl;
         // std::cout <<  Niter << std::endl;
 
         auto stop_time = std::chrono::high_resolution_clock::now();
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
 
-        std::cout << "average calculation time for each iteration [s]: "
-              << duration.count() / 1e6 << std::endl;
+        // std::cout << "average calculation time for each iteration [s]: "
+        //       << duration.count() / 1e6 << std::endl;
 
         Niter = Niter + 1;
     }
