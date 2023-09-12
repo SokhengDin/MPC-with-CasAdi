@@ -10,14 +10,13 @@ set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
 
 find_package(PkgConfig)
 find_package(casadi)
-find_package(eigen3)
 pkg_search_module(Eigen3 REQUIRED eigen3)
 include_directories(${Eigen3_INCLUDE_DIRS})
 pkg_search_module(casadi REQUIRED casadi)
 include_directories(${casadi_INCLUDE_DIRS})
 include_directories(include)
 
-add_library(mpc_mecanum_lib src/auto_mecanum.cpp)
+add_library(mpc_omni_lib src/auto_omni.cpp)
 
-add_executable(mpc_mecanum main.cpp)
-target_link_libraries(mpc_mecanum mpc_mecanum_lib casadi)
+add_executable(mpc_omni main.cpp)
+target_link_libraries(mpc_omni mpc_omni_lib casadi)

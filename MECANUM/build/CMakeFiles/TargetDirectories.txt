@@ -1,6 +1,0 @@
-/home/kenotic/ocp_ws/MPC-with-CasAdi/MECANUM/build/CMakeFiles/rebuild_cache.dir
-/home/kenotic/ocp_ws/MPC-with-CasAdi/MECANUM/build/CMakeFiles/mpc_omni.dir
-/home/kenotic/ocp_ws/MPC-with-CasAdi/MECANUM/build/CMakeFiles/mpc_controller.dir
-/home/kenotic/ocp_ws/MPC-with-CasAdi/MECANUM/build/CMakeFiles/edit_cache.dir
-/home/kenotic/ocp_ws/MPC-with-CasAdi/MECANUM/build/CMakeFiles/mpc_omni_lib.dir
-/home/kenotic/ocp_ws/MPC-with-CasAdi/MECANUM/build/CMakeFiles/mpc_mecanum_lib.dir
